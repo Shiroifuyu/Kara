@@ -11,41 +11,46 @@ typedef struct regPair{
 };
 
 //af, bc, de, hl | sp, pc
-//F Register contains flags [7,6,5,4,3,2,1,0] => [Z,N,H,C,0,0,0,0] 
+//F Register contains flags [7,6,5,4,3,2,1,0] => [Z,N,H,C,0,0,0,0]
 struct Registers {
     regPair af, bc, de, hl;
     uint16_t sp, pc;
 
-    Registers() : af(0x01, 0xB0), bc(0x00, 0x13), de(0x00, 0xd8), hl(0x01, 0x4d), sp(0xFFFE), pc(0x0000) {}; 
+    /*
+        AF = 0x01B0;
+        BC = 0x0013;
+        DE = 0x00D8;
+        HL = 0x014D;
+        SP = 0xFFFE;
+    */
+    Registers() : af(0x01, 0xB0), bc(0x00, 0x13), de(0x00, 0xd8), hl(0x01, 0x4d), sp(0xFFFE), pc(0x0000) {};
 };
 
 class Cpu {
     private:
-        /*
-            AF = 0x01B0;
-            BC = 0x0013;
-            DE = 0x00D8;
-            HL = 0x014D;
-            SP = 0xFFFE;
-        */
         Memory memory;
-        Registers registers;    
+        Registers registers;
         bool doubleSpeed;
         const unsigned int CLOCK_SPEED = 4194304; // 4.194304 MHZ
+        unsigned elapsed_ticks;
+
     public:
         void modifyFlags();
         void handleInterrupts();
         void updateTiemers();
-        void fetchInstruction();
         void halt();
         void on_reset();
+
+        void fetchInstruction();
+        void decode_instruction(uint8_t opcode);
+        void execute_instruction();
+
         enum {
             VBLANCK_INTERRUPT,
             LCD_INTERRUPT,
             TIMER_INTERRUPT,
             JOYPAD_INTERRUPT
         };
-
 
         // OP CODES
         void SRL(uint8_t);
