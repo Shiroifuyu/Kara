@@ -10,13 +10,12 @@ typedef struct regPair{
     regPair(uint8_t h, uint8_t l) : h(h), l(l) {}
 };
 
-//af, bc, de, hl | sp, pc
-//F Register contains flags [7,6,5,4,3,2,1,0] => [Z,N,H,C,0,0,0,0]
+//F Register contains flags => [Zero,Sub,HalfCarry,Carry,0,0,0,0]
 struct Registers {
     regPair af, bc, de, hl;
     uint16_t sp, pc;
 
-    /*
+    /*  Innital register values
         AF = 0x01B0;
         BC = 0x0013;
         DE = 0x00D8;
@@ -24,6 +23,13 @@ struct Registers {
         SP = 0xFFFE;
     */
     Registers() : af(0x01, 0xB0), bc(0x00, 0x13), de(0x00, 0xd8), hl(0x01, 0x4d), sp(0xFFFE), pc(0x0000) {};
+};
+
+enum {
+    VBLANCK_INTERRUPT,
+    LCD_INTERRUPT,
+    TIMER_INTERRUPT,
+    JOYPAD_INTERRUPT
 };
 
 class Cpu {
@@ -45,12 +51,7 @@ class Cpu {
         void decode_instruction(uint8_t opcode);
         void execute_instruction();
 
-        enum {
-            VBLANCK_INTERRUPT,
-            LCD_INTERRUPT,
-            TIMER_INTERRUPT,
-            JOYPAD_INTERRUPT
-        };
+        uint16_t regPair_to_word(regPair hl);   //TEMPORAL SOLUTION, CONSIDER MAKING REGISTER A CLASS AND IMPLEMENT AS A METHOD
 
         // OP CODES
         void SRL(uint8_t);
