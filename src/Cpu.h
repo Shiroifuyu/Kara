@@ -2,6 +2,11 @@
 #define _CPU_H_
 #include "Memory.h"
 
+#define Z 0x08
+#define N 0x04
+#define H 0x02
+#define C 0x01
+
 typedef struct regPair{
     uint8_t h;
     uint8_t l;
