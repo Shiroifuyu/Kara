@@ -1,5 +1,6 @@
 #include "Cpu.h"
 #include <string>
+
 void Cpu::on_reset() {
 
 }
@@ -22,15 +23,15 @@ void Cpu::fetchInstruction() {
         case 0xE9: // JP HL
             registers.pc = regPair_to_word(registers.hl);
             break;
-        
-        case 0xC2: cc = N|Z;   // JP NZ, d16 
-        case 0xD2: cc = N|C;   // JP NC, d16 
-        case 0xCA: cc = C;    // JP C, d16 
-        case 0xDA: cc = Z;    //JP Z, d16 
+
+        case 0xC2: cc = N|Z;   // JP NZ, d16
+        case 0xD2: cc = N|C;   // JP NC, d16
+        case 0xCA: cc = C;    // JP C, d16
+        case 0xDA: cc = Z;    //JP Z, d16
             uint8_t d16_l = memory.read_byte(registers.pc++);
             uint8_t d16_h = memory.read_byte(registers.pc++);
             uint16_t d16 = (d16_h << 8) | d16_l;
-            
+
             //if(registers.af.l.check_flag(cc)) TODO: Implement flag checking on register F
             //    registers.pc = d16;
 
@@ -40,12 +41,12 @@ void Cpu::fetchInstruction() {
             uint8_t r = memory.read_byte(registers.pc++);   //TODO: REVISE SIGNED ARITHMETIC, MAY BE OFF SINCE R IS A SIGNED VALUE AND WE'RE USING UNSIGNED 8 BIT VALUES FOR THE MEMORY
             registers.pc += r;
             break;
-        case 0x20: cc = N|Z; 
-        case 0x30: cc = N|C; 
-        case 0x28: cc = Z; 
+        case 0x20: cc = N|Z;
+        case 0x30: cc = N|C;
+        case 0x28: cc = Z;
         case 0x38:cc = C;
             uint8_t r = memory.read_byte(registers.pc++);
-            
+
             //if(registers.af.l.check_flag(cc)) TODO: Implement flag checking on register F
             //    registers.pc += r;
 
